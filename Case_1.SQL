@@ -170,11 +170,151 @@ WHERE product_id = 3;
 
 --6. Which item was purchased first by the customer after they became a member?
 
+SELECT join_date
+FROM members
+WHERE customer_id = 'A';
+
+--2021-01-07
+
+SELECT product_id
+FROM sales
+WHERE customer_id = 'A' AND order_date >= '2021-01-07'
+ORDER BY order_date ASC
+LIMIT 1;
+
+--2
+
+SELECT product_name
+FROM menu
+WHERE product_id = 2;
+
+--curry
+
+SELECT join_date
+FROM members
+WHERE customer_id = 'B';
+
+--2021-01-09
+
+SELECT product_id
+FROM sales
+WHERE customer_id = 'B' AND order_date >= '2021-01-09'
+ORDER BY order_date ASC
+LIMIT 1;
+
+--1
+
+SELECT product_name
+FROM menu
+WHERE product_id = 1;
+
+--sushi
+
 --7. Which item was purchased just before the customer became a member?
+
+SELECT product_id
+FROM sales
+WHERE customer_id = 'A' AND order_date < '2021-01-07'
+ORDER BY order_date DESC
+LIMIT 1;
+
+--1
+
+SELECT product_name
+FROM menu
+WHERE product_id = 1;
+
+--sushi
+
+SELECT product_id
+FROM sales
+WHERE customer_id = 'B' AND order_date < '2021-01-09'
+ORDER BY order_date DESC
+LIMIT 1;
+
+--1
+
+SELECT product_name
+FROM menu
+WHERE product_id = 1;
+
+--sushi
 
 --8. What is the total items and amount spent for each member before they became a member?
 
+SELECT COUNT(*)
+FROM sales
+JOIN menu
+	ON menu.product_id = sales.product_id
+WHERE customer_id = 'A' AND order_date < '2021-01-07';
+
+--2
+
+SELECT SUM(price)
+FROM sales
+JOIN menu
+	ON menu.product_id = sales.product_id
+WHERE customer_id = 'A' AND order_date < '2021-01-07';
+
+--25
+
+SELECT COUNT(*)
+FROM sales
+JOIN menu
+	ON menu.product_id = sales.product_id
+WHERE customer_id = 'B' AND order_date < '2021-01-09';
+
+--3
+
+SELECT SUM(price)
+FROM sales
+JOIN menu
+	ON menu.product_id = sales.product_id
+WHERE customer_id = 'B' AND order_date < '2021-01-09';
+
+--40
+
 --9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+
+SELECT SUM(
+  			CASE
+  				WHEN product_name = 'sushi' THEN 2*10*price
+  				ELSE 10*price
+ 		   END
+  		   )
+FROM sales
+JOIN menu
+	ON menu.product_id = sales.product_id
+WHERE customer_id = 'A';
+
+--860
+
+SELECT SUM(
+  			CASE
+  				WHEN product_name = 'sushi' THEN 2*10*price
+  				ELSE 10*price
+ 		   END
+  		   )
+FROM sales
+JOIN menu
+	ON menu.product_id = sales.product_id
+WHERE customer_id = 'B';
+
+--940
+
+SELECT SUM(
+  			CASE
+  				WHEN product_name = 'sushi' THEN 2*10*price
+  				ELSE 10*price
+ 		   END
+  		   )
+FROM sales
+JOIN menu
+	ON menu.product_id = sales.product_id
+WHERE customer_id = 'C';
+
+--360
 
 --10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B
 --have at the end of January?
+
